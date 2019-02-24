@@ -7,7 +7,8 @@ var Colors = {
     pink:0xF5986E,
     yellow:0xf4ce93,
     blue:0x68c3c0,
-
+    bluep: 0x00a1ff,
+    gray: 0x635f60,
 };
 
 ///////////////
@@ -116,7 +117,7 @@ function createScene() {
     nearPlane,
     farPlane
     );
-  scene.fog = new THREE.Fog(0xf7d9aa, 100,950);
+  scene.fog = new THREE.Fog(Colors.white, 100,950);
   camera.position.x = 0;
   camera.position.z = 200;
   camera.position.y = game.planeDefaultHeight;
@@ -188,7 +189,7 @@ function createLights() {
 
   hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
 
-  ambientLight = new THREE.AmbientLight(0xdc8874, .5);
+  ambientLight = new THREE.AmbientLight(0xffffff, .5);
 
   shadowLight = new THREE.DirectionalLight(0xffffff, .9);
   shadowLight.position.set(150, 350, 350);
@@ -218,7 +219,7 @@ var Pilot = function(){
   this.angleHairs=0;
 
   var bodyGeom = new THREE.BoxGeometry(15,15,15);
-  var bodyMat = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
+  var bodyMat = new THREE.MeshPhongMaterial({color:0x418708, shading:THREE.FlatShading});
   var body = new THREE.Mesh(bodyGeom, bodyMat);
   body.position.set(2,-12,0);
 
@@ -230,7 +231,7 @@ var Pilot = function(){
   this.mesh.add(face);
 
   var hairGeom = new THREE.BoxGeometry(4,4,4);
-  var hairMat = new THREE.MeshLambertMaterial({color:Colors.brown});
+  var hairMat = new THREE.MeshLambertMaterial({color:0x000000});
   var hair = new THREE.Mesh(hairGeom, hairMat);
   hair.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,2,0));
   var hairs = new THREE.Object3D();
@@ -308,16 +309,16 @@ var AirPlane = function(){
   // Cabin
 
   var geomCabin = new THREE.BoxGeometry(80,50,50,1,1,1);
-  var matCabin = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+  var matCabin = new THREE.MeshPhongMaterial({color:Colors.gray, shading:THREE.FlatShading});
 
-  geomCabin.vertices[4].y-=10;
-  geomCabin.vertices[4].z+=20;
-  geomCabin.vertices[5].y-=10;
-  geomCabin.vertices[5].z-=20;
-  geomCabin.vertices[6].y+=30;
-  geomCabin.vertices[6].z+=20;
-  geomCabin.vertices[7].y+=30;
-  geomCabin.vertices[7].z-=20;
+  geomCabin.vertices[4].y-=7;
+  geomCabin.vertices[4].z+=16;
+  geomCabin.vertices[5].y-=7;
+  geomCabin.vertices[5].z-=16;
+  geomCabin.vertices[6].y+=21;
+  geomCabin.vertices[6].z+=16;
+  geomCabin.vertices[7].y+=21;
+  geomCabin.vertices[7].z-=16;
 
   var cabin = new THREE.Mesh(geomCabin, matCabin);
   cabin.castShadow = true;
@@ -327,7 +328,18 @@ var AirPlane = function(){
   // Engine
 
   var geomEngine = new THREE.BoxGeometry(20,50,50,1,1,1);
-  var matEngine = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  // var geomEngine = new THREE.ConeGeometry(50, 20, 30, 15, false, 0, 6.3);
+  var matEngine = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+
+  geomEngine.vertices[0].y-=16;
+  geomEngine.vertices[0].z-=16;
+  geomEngine.vertices[1].y-=16;
+  geomEngine.vertices[1].z+=16;
+  geomEngine.vertices[2].y+=16;
+  geomEngine.vertices[2].z-=16;
+  geomEngine.vertices[3].y+=16;
+  geomEngine.vertices[3].z+=16;
+
   var engine = new THREE.Mesh(geomEngine, matEngine);
   engine.position.x = 50;
   engine.castShadow = true;
@@ -336,29 +348,92 @@ var AirPlane = function(){
 
   // Tail Plane
 
-  var geomTailPlane = new THREE.BoxGeometry(15,20,5,1,1,1);
+  var geomTailPlane = new THREE.BoxGeometry(20,25,5,1,1,1);
   var matTailPlane = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+  geomTailPlane.vertices[0].y-=15;
+  geomTailPlane.vertices[1].y-=15;
   var tailPlane = new THREE.Mesh(geomTailPlane, matTailPlane);
-  tailPlane.position.set(-40,20,0);
+  tailPlane.position.set(-40,22,12);
   tailPlane.castShadow = true;
   tailPlane.receiveShadow = true;
   this.mesh.add(tailPlane);
 
+  var geomTailPlane2 = new THREE.BoxGeometry(20,25,5,1,1,1);
+  var matTailPlane2 = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+  geomTailPlane2.vertices[0].y-=15;
+  geomTailPlane2.vertices[1].y-=15;
+  var tailPlane2 = new THREE.Mesh(geomTailPlane2, matTailPlane2);
+  tailPlane2.position.set(-40,22,-12);
+  tailPlane2.castShadow = true;
+  tailPlane2.receiveShadow = true;
+  this.mesh.add(tailPlane2);
+
   // Wings
 
-  var geomSideWing = new THREE.BoxGeometry(30,5,120,1,1,1);
-  var matSideWing = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
-  var sideWing = new THREE.Mesh(geomSideWing, matSideWing);
-  sideWing.position.set(0,15,0);
-  sideWing.castShadow = true;
-  sideWing.receiveShadow = true;
-  this.mesh.add(sideWing);
+  var geomSideWingR = new THREE.BoxGeometry(50,8,75,1,1,1);
 
-  var geomWindshield = new THREE.BoxGeometry(3,15,20,1,1,1);
+  geomSideWingR.vertices[0].x-=40;
+  geomSideWingR.vertices[2].x-=40;
+  var matSideWingR = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  var sideWingR = new THREE.Mesh(geomSideWingR, matSideWingR);
+  sideWingR.position.set(20,15,50);
+  sideWingR.castShadow = true;
+  sideWingR.receiveShadow = true;
+  this.mesh.add(sideWingR);
+
+  var geomSideWingL = new THREE.BoxGeometry(50,8,75,1,1,1);
+
+  geomSideWingL.vertices[1].x-=40;
+  geomSideWingL.vertices[3].x-=40;
+  var matSideWingL = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  var sideWingL = new THREE.Mesh(geomSideWingL, matSideWingL);
+  sideWingL.position.set(20,15,-50);
+  sideWingL.castShadow = true;
+  sideWingL.receiveShadow = true;
+  this.mesh.add(sideWingL);
+
+  var geomSideWingR2 = new THREE.BoxGeometry(25,5,35,1,1,1);
+
+  geomSideWingR2.vertices[0].x-=15;
+  geomSideWingR2.vertices[2].x-=15;
+  var matSideWingR2 = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  var sideWingR2 = new THREE.Mesh(geomSideWingR2, matSideWingR2);
+  sideWingR2.position.set(-37,10,25);
+  sideWingR2.castShadow = true;
+  sideWingR2.receiveShadow = true;
+  this.mesh.add(sideWingR2);
+
+  var geomSideWingL2 = new THREE.BoxGeometry(25,5,35,1,1,1);
+
+  geomSideWingL2.vertices[1].x-=15;
+  geomSideWingL2.vertices[3].x-=15;
+  var matSideWingL2 = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  var sideWingL2 = new THREE.Mesh(geomSideWingL2, matSideWingL2);
+  sideWingL2.position.set(-37,10,-25);
+  sideWingL2.castShadow = true;
+  sideWingL2.receiveShadow = true;
+  this.mesh.add(sideWingL2);
+
+  var geomBackWing = new THREE.BoxGeometry(25,5,20,1,1,1);
+
+  var matBackWing = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  var backWing = new THREE.Mesh(geomBackWing, matBackWing);
+  backWing.position.set(-37,10,0);
+  backWing.castShadow = true;
+  backWing.receiveShadow = true;
+  this.mesh.add(backWing);
+
+  var geomWindshield = new THREE.BoxGeometry(30,20,20,1,1,1);
+
+  var geomWindshield = new THREE.BoxGeometry(30,20,20,1,1,1);
+
+  geomWindshield.vertices[0].x-=9;
+  geomWindshield.vertices[1].x-=9;
+  geomWindshield.vertices[4].x-=7;
+  geomWindshield.vertices[5].x-=7;
   var matWindshield = new THREE.MeshPhongMaterial({color:Colors.white,transparent:true, opacity:.3, shading:THREE.FlatShading});;
   var windshield = new THREE.Mesh(geomWindshield, matWindshield);
-  windshield.position.set(5,27,0);
-
+  windshield.position.set(-5,27,0);
   windshield.castShadow = true;
   windshield.receiveShadow = true;
 
@@ -373,14 +448,14 @@ var AirPlane = function(){
   geomPropeller.vertices[6].z+=5;
   geomPropeller.vertices[7].y+=5;
   geomPropeller.vertices[7].z-=5;
-  var matPropeller = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
+  var matPropeller = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
   this.propeller = new THREE.Mesh(geomPropeller, matPropeller);
 
   this.propeller.castShadow = true;
   this.propeller.receiveShadow = true;
 
-  var geomBlade = new THREE.BoxGeometry(1,80,10,1,1,1);
-  var matBlade = new THREE.MeshPhongMaterial({color:Colors.brownDark, shading:THREE.FlatShading});
+  var geomBlade = new THREE.BoxGeometry(1,60,10,1,1,1);
+  var matBlade = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
   var blade1 = new THREE.Mesh(geomBlade, matBlade);
   blade1.position.set(8,0,0);
 
@@ -398,44 +473,44 @@ var AirPlane = function(){
   this.propeller.position.set(60,0,0);
   this.mesh.add(this.propeller);
 
-  var wheelProtecGeom = new THREE.BoxGeometry(30,15,10,1,1,1);
-  var wheelProtecMat = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
-  var wheelProtecR = new THREE.Mesh(wheelProtecGeom,wheelProtecMat);
-  wheelProtecR.position.set(25,-20,25);
-  this.mesh.add(wheelProtecR);
-
-  var wheelTireGeom = new THREE.BoxGeometry(24,24,4);
-  var wheelTireMat = new THREE.MeshPhongMaterial({color:Colors.brownDark, shading:THREE.FlatShading});
-  var wheelTireR = new THREE.Mesh(wheelTireGeom,wheelTireMat);
-  wheelTireR.position.set(25,-28,25);
-
-  var wheelAxisGeom = new THREE.BoxGeometry(10,10,6);
-  var wheelAxisMat = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
-  var wheelAxis = new THREE.Mesh(wheelAxisGeom,wheelAxisMat);
-  wheelTireR.add(wheelAxis);
-
-  this.mesh.add(wheelTireR);
-
-  var wheelProtecL = wheelProtecR.clone();
-  wheelProtecL.position.z = -wheelProtecR.position.z ;
-  this.mesh.add(wheelProtecL);
-
-  var wheelTireL = wheelTireR.clone();
-  wheelTireL.position.z = -wheelTireR.position.z;
-  this.mesh.add(wheelTireL);
-
-  var wheelTireB = wheelTireR.clone();
-  wheelTireB.scale.set(.5,.5,.5);
-  wheelTireB.position.set(-35,-5,0);
-  this.mesh.add(wheelTireB);
-
-  var suspensionGeom = new THREE.BoxGeometry(4,20,4);
-  suspensionGeom.applyMatrix(new THREE.Matrix4().makeTranslation(0,10,0))
-  var suspensionMat = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
-  var suspension = new THREE.Mesh(suspensionGeom,suspensionMat);
-  suspension.position.set(-35,-5,0);
-  suspension.rotation.z = -.3;
-  this.mesh.add(suspension);
+  // var wheelProtecGeom = new THREE.BoxGeometry(30,15,10,1,1,1);
+  // var wheelProtecMat = new THREE.MeshPhongMaterial({color:Colors.bluep, shading:THREE.FlatShading});
+  // var wheelProtecR = new THREE.Mesh(wheelProtecGeom,wheelProtecMat);
+  // wheelProtecR.position.set(25,-20,25);
+  // this.mesh.add(wheelProtecR);
+  //
+  // var wheelTireGeom = new THREE.BoxGeometry(24,24,4);
+  // var wheelTireMat = new THREE.MeshPhongMaterial({color:Colors.brownDark, shading:THREE.FlatShading});
+  // var wheelTireR = new THREE.Mesh(wheelTireGeom,wheelTireMat);
+  // wheelTireR.position.set(25,-28,25);
+  //
+  // var wheelAxisGeom = new THREE.BoxGeometry(10,10,6);
+  // var wheelAxisMat = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
+  // var wheelAxis = new THREE.Mesh(wheelAxisGeom,wheelAxisMat);
+  // wheelTireR.add(wheelAxis);
+  //
+  // this.mesh.add(wheelTireR);
+  //
+  // var wheelProtecL = wheelProtecR.clone();
+  // wheelProtecL.position.z = -wheelProtecR.position.z ;
+  // this.mesh.add(wheelProtecL);
+  //
+  // var wheelTireL = wheelTireR.clone();
+  // wheelTireL.position.z = -wheelTireR.position.z;
+  // this.mesh.add(wheelTireL);
+  //
+  // var wheelTireB = wheelTireR.clone();
+  // wheelTireB.scale.set(.5,.5,.5);
+  // wheelTireB.position.set(-35,-5,0);
+  // this.mesh.add(wheelTireB);
+  //
+  // var suspensionGeom = new THREE.BoxGeometry(4,20,4);
+  // suspensionGeom.applyMatrix(new THREE.Matrix4().makeTranslation(0,10,0))
+  // var suspensionMat = new THREE.MeshPhongMaterial({color:Colors.bluep, shading:THREE.FlatShading});
+  // var suspension = new THREE.Mesh(suspensionGeom,suspensionMat);
+  // suspension.position.set(-35,-5,0);
+  // suspension.rotation.z = -.3;
+  // this.mesh.add(suspension);
 
   this.pilot = new Pilot();
   this.pilot.mesh.position.set(-10,27,0);
@@ -496,7 +571,7 @@ Sea = function(){
                     });
   };
   var mat = new THREE.MeshPhongMaterial({
-    color:Colors.blue,
+    color:0xc4903e,
     transparent:true,
     opacity:.8,
     shading:THREE.FlatShading,
@@ -525,15 +600,15 @@ Sea.prototype.moveWaves = function (){
 Cloud = function(){
   this.mesh = new THREE.Object3D();
   this.mesh.name = "cloud";
-  var geom = new THREE.CubeGeometry(20,20,20);
+  var geom = new THREE.TetrahedronGeometry(8,2);
   var mat = new THREE.MeshPhongMaterial({
-    color:Colors.white,
+    color:Colors.gray,
 
   });
 
   //*
   var nBlocs = 3+Math.floor(Math.random()*3);
-  for (var i=0; i<nBlocs; i++ ){
+  for (var i=0; i<1; i++ ){
     var m = new THREE.Mesh(geom.clone(), mat);
     m.position.x = i*15;
     m.position.y = Math.random()*10;
@@ -687,9 +762,9 @@ ParticlesHolder.prototype.spawnParticles = function(pos, density, color, scale){
 }
 
 Coin = function(){
-  var geom = new THREE.TetrahedronGeometry(5,0);
+  var geom = new THREE.CylinderGeometry(3, 3, 7, 20);
   var mat = new THREE.MeshPhongMaterial({
-    color:0x009999,
+    color:0x00a1ff,
     shininess:0,
     specular:0xffffff,
 
@@ -898,7 +973,7 @@ function updateEnergy(){
   game.energy -= game.speed*deltaTime*game.ratioSpeedEnergy;
   game.energy = Math.max(0, game.energy);
   energyBar.style.right = (100-game.energy)+"%";
-  energyBar.style.backgroundColor = (game.energy<50)? "#f25346" : "#68c3c0";
+  energyBar.style.backgroundColor = (game.energy<50)? "#f25346" : "#00a1ff";
 
   if (game.energy<30){
     energyBar.style.animationName = "blinking";
